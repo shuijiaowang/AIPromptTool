@@ -1,4 +1,4 @@
-// entrypoints/DouBao.content.ts
+// entrypoints/DouBao.content.js
 import {defineContentScript, injectScript} from "#imports";
 
 export default defineContentScript({

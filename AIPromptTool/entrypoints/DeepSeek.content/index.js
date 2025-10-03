@@ -1,4 +1,4 @@
-// entrypoints/example.content.ts
+// entrypoints/example.content.js
 import {createShadowRootUi, defineContentScript, injectScript} from "#imports";
 import {createApp} from "vue";
 import Index from "../../components/view/index.vue";

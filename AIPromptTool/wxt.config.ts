@@ -13,5 +13,5 @@ export default defineConfig({
     },
 });
 
-// content.ts
+// content.js
 
