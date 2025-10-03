@@ -14,21 +14,14 @@
 
 //还需要一个按钮，点击之后把input输入框中的词语映射成相应的句子这样一个功能，还是绑定网页原有的发送按钮？
 
-import { ref, onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
+import {useLinkStore} from "@/stores/linkStore.js";
+import {useTextStore} from "@/stores/textStore.js";
+import {useDrag} from "@/components/useDrag.js";
 // 控制弹窗显示状态
 const showPopup = ref(false);
-
-// 固定的GitHub链接数据
-const githubLinks = [
-  { id: 1, name: '项目仓库', url: 'https://github.com/shuijiaowang/AIPromptTool.git' },
-  { id: 2, name: '文档仓库', url: 'https://github.com/shuijiaowang/shuijiaowangGoService.git' },
-  { id: 3, name: 'API仓库', url: 'https://github.com/example/api' }
-];
-let textRule = [
-  { id: 1, trigger: '翻译', prompt: '翻译为中文' },
-  { id: 2, trigger: '英语', prompt: '给这个变量或是函数起几个英语名' },
-  { id: 3, trigger: '解释', prompt: '解释这段代码的功能' }
-];
+const linkStore = useLinkStore()
+const textStore = useTextStore()
 
 // 接收主世界脚本的消息
 onMounted(() => {
@@ -43,30 +36,51 @@ const handleLinkClick = (link) => {
     url: link.url
   }, '*');
 };
-
+const containerRef = ref(null);
 // 切换弹窗显示状态
 const togglePopup = () => {
   showPopup.value = !showPopup.value;
 };
+// 调用拖拽逻辑
+const {position, onMousedown} = useDrag(containerRef);
 </script>
 
 <template>
-  <div class="container">
+  <div class="container"
+       ref="containerRef"
+       :style="{
+      left: position.x + 'px',
+      top: position.y + 'px',
+      position: 'absolute'
+    }"
+       @mousedown="onMousedown">
     <!-- 触发按钮 -->
     <button class="btn" @click="togglePopup">
       查看GitHub链接
     </button>
 
+
+
     <!-- 弹窗 (150×120px) -->
     <div v-if="showPopup" class="popup" @click.stop>
       <ul class="link-list">
         <li
-            v-for="link in githubLinks"
+            v-for="link in linkStore.links"
             :key="link.id"
             @click="handleLinkClick(link)"
             class="link-item"
         >
-          {{ link.name }}
+          {{ link.name }}{{ link.url }}
+        </li>
+      </ul>
+      <ul class="link-list">
+        <li
+            v-for="text in textStore.texts"
+            :key="text.id"
+            @click="handleTextClick(text)"
+            class="text-item"
+        >
+          {{ text.trigger }}{{ text.prompt }}
         </li>
       </ul>
     </div>
@@ -75,23 +89,24 @@ const togglePopup = () => {
 
 <style scoped>
 .container {
-  position: relative;
+  cursor: move;
   display: inline-block;
 }
 
 .btn {
+
+  background-color: white;
+  color: black;
   padding: 8px 16px;
-  background-color: #4f46e5;
-  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .btn:hover {
-  background-color: #4338ca;
+  background-color: #d3e3fd;
 }
 
 .popup {
@@ -99,12 +114,12 @@ const togglePopup = () => {
   top: 100%;
   left: 0;
   margin-top: 8px;
-  width: 150px;
-  height: 120px;
+  width: auto;
+  height: auto;
   background-color: white;
   border: 1px solid #e5e7eb;
   border-radius: 4px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 8px;
   overflow-y: auto;
   z-index: 10;
@@ -133,6 +148,7 @@ const togglePopup = () => {
 .popup::-webkit-scrollbar {
   width: 4px;
 }
+
 .popup::-webkit-scrollbar-thumb {
   background-color: #ddd;
   border-radius: 2px;

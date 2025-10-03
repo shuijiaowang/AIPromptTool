@@ -1,7 +1,8 @@
 // entrypoints/example.content.js
 import {createShadowRootUi, defineContentScript, injectScript} from "#imports";
 import {createApp} from "vue";
-import Index from "../../components/view/index.vue";
+import Index from "../../view/index.vue";
+import pinia from "../../stores/index.js";
 
 export default defineContentScript({
     matches: ["<all_urls>"],
@@ -16,7 +17,6 @@ export default defineContentScript({
                 container.style.position = 'fixed'; // Use fixed positioning
                 container.style.top = '20px'; // 距离顶部距离
                 container.style.right = '20px'; // 距离右侧距离
-                container.style.padding = '15px';
                 container.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
                 container.style.borderRadius = '8px';
                 container.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
@@ -24,6 +24,8 @@ export default defineContentScript({
                 // container.style.position = 'fixed'; // Use fixed positioning
                 // Define how your UI will be mounted inside the container
                 const app = createApp(Index);
+                app.use(pinia); // 使用 Pinia
+
                 app.mount(container);
                 return app;
             },
