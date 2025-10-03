@@ -58,6 +58,8 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
+import {useLinkStore} from "@/stores/linkStore.js";
+const linkStore=useLinkStore()
 
 const props = defineProps({
   type: {
@@ -93,12 +95,21 @@ const handleCancel = () => {
 };
 
 const handleSave = () => {
-  emit('update', tempItem.value);
+  //修改保存
+  if (props.type === 'link') {
+  } else if (props.type === 'mapping') {
+  }
+
   editMode.value = false;
 };
 
 const handleDelete = () => {
-  emit('delete', props.item.id);
+  //修改保存
+  if (props.type === 'link') {
+    linkStore.deleteLink(props.item.id);
+    console.log("删除没有生效？？？", props.item.id, linkStore.links)
+  } else if (props.type === 'mapping') {
+  }
 };
 
 const handleTextClick = () => {

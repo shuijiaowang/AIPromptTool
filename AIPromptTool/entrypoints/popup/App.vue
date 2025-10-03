@@ -1,5 +1,6 @@
-<script lang="ts" setup>
+<script setup>
 import HelloWorld from '@/components/HelloWorld.vue';
+
 </script>
 
 <template>
@@ -12,6 +13,7 @@ import HelloWorld from '@/components/HelloWorld.vue';
     </a>
   </div>
   <HelloWorld msg="WXT + Vue" />
+  <button class="export-btn" @click="exportData">导出数据</button>
 </template>
 
 <style scoped>

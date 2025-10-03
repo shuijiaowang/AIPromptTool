@@ -27,7 +27,7 @@
             type="link"
             :item="item"
         />
-        <button class="add-btn" @click="linkStore.addLink">+ 添加链接</button>
+        <button class="add-btn" @click="linkStore.addLink(1,2)">+ 添加链接</button>
       </div>
 
       <!-- 文字映射列表 -->
@@ -53,8 +53,8 @@ import {useMappingStore} from "@/stores/mappingStore.js";
 
 const linkStore= useLinkStore()
 const mappingStore =useMappingStore()
-const links = ref(linkStore.links);
-const mappings = ref(mappingStore.mappings);
+const links = linkStore.links;
+const mappings = mappingStore.mappings;
 
 // 激活的标签页
 const activeTab = ref('link');
