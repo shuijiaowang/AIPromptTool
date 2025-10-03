@@ -15,34 +15,23 @@
 //还需要一个按钮，点击之后把input输入框中的词语映射成相应的句子这样一个功能，还是绑定网页原有的发送按钮？
 
 import {onMounted, ref} from 'vue';
-import {useLinkStore} from "@/stores/linkStore.js";
-import {useTextStore} from "@/stores/textStore.js";
 import {useDrag} from "@/components/useDrag.js";
+import Popup from "@/components/Popup.vue";
 // 控制弹窗显示状态
-const showPopup = ref(false);
-const linkStore = useLinkStore()
-const textStore = useTextStore()
+const isShowPopup = ref(false);
 
 // 接收主世界脚本的消息
 onMounted(() => {
 
 });
 
-// 点击链接触发的事件 - 通过消息发送到主世界
-const handleLinkClick = (link) => {
-  // 向主世界脚本发送消息
-  window.postMessage({
-    type: 'INSERT_LINK',
-    url: link.url
-  }, '*');
-};
 const containerRef = ref(null);
 // 切换弹窗显示状态
 const togglePopup = () => {
-  showPopup.value = !showPopup.value;
+  isShowPopup.value = !isShowPopup.value;
 };
 // 调用拖拽逻辑
-const {position, onMousedown} = useDrag(containerRef);
+const {position, onMousedown} = useDrag(containerRef,'containerPos');
 </script>
 
 <template>
@@ -51,38 +40,17 @@ const {position, onMousedown} = useDrag(containerRef);
        :style="{
       left: position.x + 'px',
       top: position.y + 'px',
-      position: 'absolute'
+      position: 'fixed'
     }"
        @mousedown="onMousedown">
     <!-- 触发按钮 -->
     <button class="btn" @click="togglePopup">
-      查看GitHub链接
+      AI快捷回复
     </button>
 
-
-
     <!-- 弹窗 (150×120px) -->
-    <div v-if="showPopup" class="popup" @click.stop>
-      <ul class="link-list">
-        <li
-            v-for="link in linkStore.links"
-            :key="link.id"
-            @click="handleLinkClick(link)"
-            class="link-item"
-        >
-          {{ link.name }}{{ link.url }}
-        </li>
-      </ul>
-      <ul class="link-list">
-        <li
-            v-for="text in textStore.texts"
-            :key="text.id"
-            @click="handleTextClick(text)"
-            class="text-item"
-        >
-          {{ text.trigger }}{{ text.prompt }}
-        </li>
-      </ul>
+    <div v-if="isShowPopup" class="popup" @click.stop>
+      <popup></popup>
     </div>
   </div>
 </template>

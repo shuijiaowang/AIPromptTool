@@ -6,6 +6,8 @@ export default defineUnlistedScript(() => {
 
     // 监听来自内容脚本的消息
     window.addEventListener('message', (event) => {
+        //没有生效
+
         if (event.source === window && event.data.type === 'INSERT_LINK') {
             //如果是链接，则调用粘贴函数
             //还需要判断来源，如果是豆包网页的，则精准执行豆包网页的响应方法，暂时默认就是豆包

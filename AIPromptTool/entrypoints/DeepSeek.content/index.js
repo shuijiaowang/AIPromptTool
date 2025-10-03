@@ -1,5 +1,5 @@
 // entrypoints/example.content.js
-import {createShadowRootUi, defineContentScript, injectScript} from "#imports";
+import {createShadowRootUi, defineContentScript} from "#imports";
 import {createApp} from "vue";
 import Index from "../../view/index.vue";
 import pinia from "../../stores/index.js";
