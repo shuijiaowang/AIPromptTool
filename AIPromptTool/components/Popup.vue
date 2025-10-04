@@ -27,7 +27,7 @@
             type="link"
             :item="item"
         />
-        <button class="add-btn" @click="linkStore.addLink(1,2)">+ 添加链接</button>
+        <button class="add-btn" @click="linkStore.addLink('','')">+ 添加链接</button>
       </div>
 
       <!-- 文字映射列表 -->
@@ -38,14 +38,14 @@
             type="mapping"
             :item="item"
         />
-        <button class="add-btn" @click="mappingStore.addMapping">+ 添加映射</button>
+        <button class="add-btn" @click="mappingStore.addMapping('1','2')">+ 添加映射</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {computed, ref} from 'vue';
 import ItemEditor from './ItemEditor.vue';
 
 import {useLinkStore} from "@/stores/linkStore.js";
@@ -53,8 +53,10 @@ import {useMappingStore} from "@/stores/mappingStore.js";
 
 const linkStore= useLinkStore()
 const mappingStore =useMappingStore()
-const links = linkStore.links;
-const mappings = mappingStore.mappings;
+// const links = linkStore.links; //这个到底是不是响应式的？
+const links = computed(() => linkStore.links)
+// const { links } = storeToRefs(linkStore)
+const mappings =computed(()=> mappingStore.mappings)
 
 // 激活的标签页
 const activeTab = ref('link');
@@ -63,23 +65,23 @@ const activeTab = ref('link');
 
 <style scoped>
 .popup-container {
-  min-width: 400px;
-  max-height: 300px; /* 限制高度，溢出滚动 */
+  min-width: 300px;
+  max-height: 250px; /* 限制高度，溢出滚动 */
   overflow-y: auto;
 }
 
 .tabs {
   display: flex;
   border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 .tabs button {
-  padding: 8px 16px;
+  padding: 4px 6px;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .tabs button.active {
@@ -92,12 +94,13 @@ const activeTab = ref('link');
 }
 
 .add-btn {
-  margin-top: 8px;
+  margin-top: 4px;
   width: 100%;
-  padding: 6px;
+  padding: 4px;
   border: 1px dashed #ddd;
   background: #f9f9f9;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .add-btn:hover {

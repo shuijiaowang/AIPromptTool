@@ -5,7 +5,7 @@ import Index from "../../view/index.vue";
 import pinia from "../../stores/index.js";
 
 export default defineContentScript({
-    matches: ["<all_urls>"],
+    matches: ['*://*.doubao.com/chat/*','*://*.chat.deepseek.com/*'], //只匹配两个网页怎么写
     cssInjectionMode: 'ui',
     main:async(ctx)=> {
         const ui = await createShadowRootUi(ctx, {

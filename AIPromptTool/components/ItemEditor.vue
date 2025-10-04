@@ -59,7 +59,9 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import {useLinkStore} from "@/stores/linkStore.js";
+import {useMappingStore} from "@/stores/mappingStore.js";
 const linkStore=useLinkStore()
+const mappingStore =useMappingStore()
 
 const props = defineProps({
   type: {
@@ -92,28 +94,29 @@ const handleEdit = () => {
 
 const handleCancel = () => {
   editMode.value = false;
+  resetTempItem(); // 重置临时数据
 };
-
+//修改保存
 const handleSave = () => {
-  //修改保存
   if (props.type === 'link') {
+    console.log("修改保存：t.value是啥", props.item.id, tempItem.value)
+    linkStore.updateLink(props.item.id, tempItem.value);
   } else if (props.type === 'mapping') {
+    mappingStore.updateMapping(props.item.id, tempItem.value);
   }
-
   editMode.value = false;
 };
 
 const handleDelete = () => {
-  //修改保存
   if (props.type === 'link') {
     linkStore.deleteLink(props.item.id);
-    console.log("删除没有生效？？？", props.item.id, linkStore.links)
   } else if (props.type === 'mapping') {
+    mappingStore.deleteMapping(props.item.id);
   }
 };
 
 const handleTextClick = () => {
-
+  window.postMessage({ type:'INSERT_TEXT',text: props.item.text })
 };
 const handleLinkClick = () => {
   window.postMessage({ type:'INSERT_LINK',url: props.item.url })
@@ -124,9 +127,10 @@ const handleLinkClick = () => {
 .item-container {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 0;
+  gap: 4px;
+  padding: 1px 0;
   border-bottom: 1px solid #f0f0f0;
+  font-size: 12px;
 }
 
 /* 展示模式使用flex布局 */
@@ -148,12 +152,13 @@ const handleLinkClick = () => {
 
 /* 短文字样式优化 */
 .text-ellipsis {
-  width: 80px;
+  width: 65px;
   font-weight: bold;
   cursor: pointer;
   padding: 2px 4px;
   border-radius: 3px;
   transition: color 0.2s, background-color 0.2s;
+  font-size: 12px;
 }
 
 .text-ellipsis:hover {
@@ -165,13 +170,14 @@ const handleLinkClick = () => {
 .sentence-ellipsis {
   flex: 1;
   min-width: 0; /* 解决flex子元素不收缩问题 */
+  font-size: 10px;
 }
 
 /* 按钮区域固定在右侧 */
 .item-actions {
   display: flex;
   gap: 4px;
-  min-width: 120px; /* 固定按钮区域宽度 */
+  min-width: 100px; /* 固定按钮区域宽度 */
   justify-content: flex-end;
   margin-left: auto; /* 推到最右侧 */
 }

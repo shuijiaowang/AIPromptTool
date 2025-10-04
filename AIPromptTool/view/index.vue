@@ -19,19 +19,20 @@ import {useDrag} from "@/components/useDrag.js";
 import Popup from "@/components/Popup.vue";
 // 控制弹窗显示状态
 const isShowPopup = ref(false);
-
+// 切换弹窗显示状态
+const togglePopup = () => {
+  isShowPopup.value = !isShowPopup.value;
+};
 // 接收主世界脚本的消息
 onMounted(() => {
 
 });
 
 const containerRef = ref(null);
-// 切换弹窗显示状态
-const togglePopup = () => {
-  isShowPopup.value = !isShowPopup.value;
-};
+const dragHandleRef = ref(null); // 拖拽把手
+
 // 调用拖拽逻辑
-const {position, onMousedown} = useDrag(containerRef,'containerPos');
+const {position, onMousedown} = useDrag(dragHandleRef,'containerPos');
 </script>
 
 <template>
@@ -40,14 +41,18 @@ const {position, onMousedown} = useDrag(containerRef,'containerPos');
        :style="{
       left: position.x + 'px',
       top: position.y + 'px',
-      position: 'fixed'
+      position: 'fixed',
+
     }"
        @mousedown="onMousedown">
+    <!-- 拖拽把手 -->
+
     <!-- 触发按钮 -->
     <button class="btn" @click="togglePopup">
       AI快捷回复
     </button>
-
+    <div class="drag-handle" ref="dragHandleRef" @mousedown="onMousedown">
+    </div>
     <!-- 弹窗 (150×120px) -->
     <div v-if="isShowPopup" class="popup" @click.stop>
       <popup></popup>
@@ -57,7 +62,6 @@ const {position, onMousedown} = useDrag(containerRef,'containerPos');
 
 <style scoped>
 .container {
-  cursor: move;
   display: inline-block;
 }
 
@@ -81,35 +85,16 @@ const {position, onMousedown} = useDrag(containerRef,'containerPos');
   position: absolute;
   top: 100%;
   left: 0;
-  margin-top: 8px;
+  margin-top: 2px;
   width: auto;
   height: auto;
   background-color: white;
   border: 1px solid #e5e7eb;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 8px;
+  padding: 4px;
   overflow-y: auto;
   z-index: 10;
-}
-
-.link-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.link-item {
-  padding: 6px 8px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #2563eb;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.link-item:hover {
-  background-color: #f3f4f6;
-  color: #1d4ed8;
 }
 
 /* 自定义滚动条样式 */
@@ -120,5 +105,10 @@ const {position, onMousedown} = useDrag(containerRef,'containerPos');
 .popup::-webkit-scrollbar-thumb {
   background-color: #ddd;
   border-radius: 2px;
+}
+.drag-handle {
+  cursor: move;
+  background: #f0f0f0;
+  padding: 4px;
 }
 </style>

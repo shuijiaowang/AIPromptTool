@@ -35,7 +35,7 @@ export const useLinkStore = defineStore('link', () => {
         });
     };
 
-    // 更新链接
+    // 更新name或链接
     const updateLink = (id, updatedData) => {
         const index = links.value.findIndex(link => link.id === id);
         if (index !== -1) {
