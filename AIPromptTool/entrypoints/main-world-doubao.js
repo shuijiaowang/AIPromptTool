@@ -48,8 +48,7 @@ export default defineUnlistedScript(() => {
         // 触发粘贴事件
         reactProps.onPaste(pasteEvent);
     }
-    // 插入文本到输入框的核心函数
-    function insertTextIntoInput(TEXT_TO_INPUT) {
+    function insertTextIntoInput1(TEXT_TO_INPUT) {
         const input = document.querySelector('[data-testid="chat_input_input"]');
 
         // 1. 关键：获取React组件的props（__reactProps$后面的后缀是动态的，用正则匹配）
@@ -72,5 +71,25 @@ export default defineUnlistedScript(() => {
 
         // 4. 同步更新DOM的value（确保视图和state一致，可选但建议加）
         input.value = TEXT_TO_INPUT;
+    }
+    // 插入文本到输入框的核心函数
+    function insertTextIntoInput(TEXT_TO_INPUT) {
+        const input = document.querySelector('[data-testid="chat_input_input"]');
+        if (!input) return;
+
+        // 获取 reactProps
+        const reactPropsKey = Object.keys(input).find(key => key.startsWith('__reactProps$'));
+        const reactProps = input[reactPropsKey];
+
+        // 构造 InputEvent
+        const event = new InputEvent('beforeinput', {
+            inputType: 'insertText',
+            data: TEXT_TO_INPUT,
+            bubbles: true,
+            cancelable: true
+        });
+
+        // 触发事件
+        input.dispatchEvent(event);
     }
 });

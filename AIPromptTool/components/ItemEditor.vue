@@ -115,10 +115,13 @@ const handleDelete = () => {
   }
 };
 
+//点击事假
 const handleTextClick = () => {
-  window.postMessage({ type:'INSERT_TEXT',text: props.item.text })
+  //追加文本
+  window.postMessage({ type:'INSERT_TEXT',text: props.item.prompt })
 };
 const handleLinkClick = () => {
+  //链接复制到输入框
   window.postMessage({ type:'INSERT_LINK',url: props.item.url })
 };
 </script>
