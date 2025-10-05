@@ -4,7 +4,7 @@
       class="before-send-button"
       :style="buttonStyle"
   >
-    <button class="custom-btn" @click="mainStore.handleInputProcessing('翻译，翻译,翻译')">
+    <button class="custom-btn" @click="mainStore.handleInputProcessing(getInputText())">
       <span role="img" class="btn-icon">✨</span>
       <span class="btn-text">快捷发送</span>
     </button>
@@ -14,24 +14,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import {useMainStore} from "@/stores/mian.js";
+import { SITE_CONFIGS } from '@/config/siteConfig.js';
 const mainStore=useMainStore()
-// 1. URL与选择器的映射关系配置
-// 支持字符串匹配、正则匹配两种方式
-const URL_SELECTOR_MAP = [
-  {
-    url: 'doubao.com/chat', // 豆包聊天页
-    selectors: ['[data-testid="chat_input_send_button"]']
-  },
-  {
-    url: /deepseek\.com/, // DeepSeek网站（正则匹配）
-    selectors: ['#flow-end-msg-send']
-  },
-  {
-    url: 'default', // 现在默认测试豆包聊天页
-    selectors: ['[data-testid="chat_input_send_button"]']
-  }
-];
-
 const buttonContainer = ref(null);
 const buttonStyle = ref({
   position: 'fixed', // 改为fixed定位，相对于视口
@@ -39,36 +23,37 @@ const buttonStyle = ref({
   display: 'none'
 });
 
-// 2. 根据当前URL获取对应的选择器
-const getSelectorsByUrl = () => {
+// 1. 根据当前URL获取匹配的网站配置
+const getCurrentSiteConfig = () => {
   const currentUrl = window.location.href;
 
-  // 优先匹配具体规则
-  for (const item of URL_SELECTOR_MAP) {
-    if (item.url === 'default') continue;
+  // 优先匹配具体网站规则
+  for (const config of SITE_CONFIGS) {
+    const isMatch = typeof config.url === 'string'
+        ? currentUrl.includes(config.url)
+        : config.url.test(currentUrl);
 
-    // 支持字符串包含和正则匹配
-    const isMatch = typeof item.url === 'string'
-        ? currentUrl.includes(item.url)
-        : item.url.test(currentUrl);
-
-    if (isMatch) return item.selectors;
+    if (isMatch) return config;
   }
 
-  // 匹配默认规则
-  return URL_SELECTOR_MAP.find(item => item.url === 'default').selectors;
-};
-
-// 3. 查找目标发送按钮
-const findTargetButton = () => {
-  const selectors = getSelectorsByUrl();
-  for (const selector of selectors) {
-    const element = document.querySelector(selector);
-    if (element) return element;
-  }
+  // 未匹配到任何规则时返回null（可根据需求设置默认配置）
   return null;
 };
 
+// 2. 查找目标发送按钮（基于当前网站配置）
+const findTargetButton = () => {
+  const siteConfig = getCurrentSiteConfig();
+  if (!siteConfig) return null;
+
+  // 使用配置中的发送按钮选择器查找元素
+  return document.querySelector(siteConfig.sendButtonSelector);
+};
+//3.获取目标输入框中的内容
+const getInputText = () => {
+  const siteConfig = getCurrentSiteConfig();
+  if (!siteConfig) return null;
+  return document.querySelector(siteConfig.inputSelector).textContent.trim(); //这里对吗
+}
 // 4. 计算按钮位置（悬浮在目标按钮上方）
 const calculatePosition = (targetButton) => {
   if (!targetButton || !buttonContainer.value) return;

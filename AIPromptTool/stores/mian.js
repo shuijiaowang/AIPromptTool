@@ -55,7 +55,6 @@ export const useMainStore = defineStore('main', () => {
     const processDefaultContent=()=>{
         mappingStore.mappings.forEach(mapping=>{
             if(mapping.isDefault){
-                console.log("执行了吗？", mapping.prompt)
                 window.postMessage({type:'INSERT_TEXT', text: mapping.prompt });
             }
         })
@@ -65,11 +64,12 @@ export const useMainStore = defineStore('main', () => {
             if (!content) return;
             // 处理内容
             const processedContent = processInputContent(content);
-            console.log("处理后的内容：", processedContent);
+            console.log("第一步，处理完替换后的文字：√", processedContent);
             // 发送处理后的内容到页面
+            // 是因为同步问题吗还是什么别
             window.postMessage({type:'INPUT_CHANGE',  text: processedContent });
-            // processDefaultContent();
-            console.log("没执行吗？")
+            setTimeout(()=>{},1000)
+            processDefaultContent();
         };
 
 
