@@ -31,7 +31,8 @@ export const useLinkStore = defineStore('link', () => {
         links.value.push({
             id: Date.now(), // 使用时间戳作为唯一ID
             text,
-            url
+            url,
+            isDefault: false // 新增字段
         });
     };
 

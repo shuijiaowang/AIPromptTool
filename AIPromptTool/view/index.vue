@@ -17,6 +17,7 @@
 import {onMounted, ref} from 'vue';
 import {useDrag} from "@/components/useDrag.js";
 import Popup from "@/components/Popup.vue";
+import BeforeSendButton from "@/components/BeforeSendButton.vue";
 // 控制弹窗显示状态
 const isShowPopup = ref(false);
 // 切换弹窗显示状态
@@ -34,7 +35,6 @@ const dragHandleRef = ref(null); // 拖拽把手
 // 调用拖拽逻辑
 const {position, onMousedown} = useDrag(dragHandleRef,'containerPos');
 </script>
-
 <template>
   <div class="container"
        ref="containerRef"
@@ -57,6 +57,8 @@ const {position, onMousedown} = useDrag(dragHandleRef,'containerPos');
     <div v-if="isShowPopup" class="popup" @click.stop>
       <popup></popup>
     </div>
+<!--    添加一个按钮，这个按钮的位置靠近页面原有的button附近？感觉需要通过js来操作？点击之后会触发一个方法-->
+    <before-send-button/>
   </div>
 </template>
 
@@ -66,7 +68,7 @@ const {position, onMousedown} = useDrag(dragHandleRef,'containerPos');
 }
 
 .btn {
-
+  width: 100px;
   background-color: white;
   color: black;
   padding: 8px 16px;
@@ -111,4 +113,5 @@ const {position, onMousedown} = useDrag(dragHandleRef,'containerPos');
   background: #f0f0f0;
   padding: 4px;
 }
+
 </style>

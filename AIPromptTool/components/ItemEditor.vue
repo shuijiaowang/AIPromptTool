@@ -29,6 +29,15 @@
         </span>
         <span class="sentence-ellipsis">{{ item.prompt }}</span>
       </template>
+      <!-- 新增：默认追加复选框（展示状态） -->
+      <div class="default-checkbox">
+        <label>
+          <input
+              type="checkbox"
+              v-model="item.isDefault"
+          >
+        </label>
+      </div>
 
       <div class="item-actions">
         <button @click="handleEdit">修改</button>
@@ -180,7 +189,7 @@ const handleLinkClick = () => {
 .item-actions {
   display: flex;
   gap: 4px;
-  min-width: 100px; /* 固定按钮区域宽度 */
+  min-width: 80px; /* 固定按钮区域宽度 */
   justify-content: flex-end;
   margin-left: auto; /* 推到最右侧 */
 }
@@ -246,5 +255,21 @@ button:hover {
 
 .item-view .link-ellipsis:active {
   color: #359e69;           /* 点击时颜色加深 */
+}
+
+/* 新增复选框样式 */
+.default-checkbox {
+  margin: 0 1px;
+  white-space: nowrap; /* 防止文字换行 */
+}
+
+.default-checkbox input {
+  margin-right: 1px;
+  vertical-align: middle;
+}
+
+.default-checkbox label {
+  font-size: 11px;
+  color: #666;
 }
 </style>

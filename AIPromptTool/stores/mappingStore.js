@@ -13,7 +13,8 @@ export const useMappingStore = defineStore('mapping', () => {
         mappings.value.push({
             id: Date.now(), // 使用时间戳作为唯一ID
             trigger,
-            prompt
+            prompt,
+            isDefault: false // 新增字段
         });
     };
 

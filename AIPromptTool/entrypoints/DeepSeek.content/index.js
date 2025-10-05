@@ -15,8 +15,9 @@ export default defineContentScript({
             onMount: (container) => {
                 container.style.zIndex = '1000'; // Ensure it's on top
                 container.style.position = 'fixed'; // Use fixed positioning
-                container.style.top = '20px'; // 距离顶部距离
-                container.style.right = '20px'; // 距离右侧距离
+                container.style.top = '0px'; // 距离顶部距离
+                container.style.left = '0px'; // 距离右侧距离
+                container.style.zIndex = '1000';
                 container.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
                 container.style.borderRadius = '8px';
                 container.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
