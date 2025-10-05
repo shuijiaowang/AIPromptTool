@@ -4,7 +4,7 @@
       class="before-send-button"
       :style="buttonStyle"
   >
-    <button class="custom-btn" @click="mainStore.handleInputProcessing(getInputText())">
+    <button class="custom-btn" @click="mainStore.handleInputProcessing(getInputText())" @keydown="handleKeyDown">
       <span role="img" class="btn-icon">✨</span>
       <span class="btn-text">快捷发送</span>
     </button>
@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, onBeforeUnmount} from 'vue';
 import {useMainStore} from "@/stores/mian.js";
 import { SITE_CONFIGS } from '@/config/siteConfig.js';
 const mainStore=useMainStore()
@@ -22,6 +22,27 @@ const buttonStyle = ref({
   zIndex: '9999',
   display: 'none'
 });
+
+function handleClick() {
+  mainStore.handleInputProcessing(getInputText())
+}
+const keyHistory = ref([]) // 记录最近按键时间
+function handleKeyDown(e) {
+  if (e.code === 'Space') {
+    e.preventDefault() // 防止页面滚动
+    const now = Date.now()
+    keyHistory.value.push(now)
+    // 只保留最近 3 次按键，且在 500ms 内
+    keyHistory.value = keyHistory.value
+        .filter(t => now - t < 500)
+        .slice(-3)
+
+    if (keyHistory.value.length >= 3) {
+      handleClick() // 触发点击事件
+      keyHistory.value = [] // 重置
+    }
+  }
+}
 
 // 1. 根据当前URL获取匹配的网站配置
 const getCurrentSiteConfig = () => {
@@ -72,6 +93,8 @@ const calculatePosition = (targetButton) => {
 
 // 5. 初始化与监听
 onMounted(() => {
+
+  document.addEventListener('keydown', handleKeyDown)
   // 定位更新函数
   const updatePosition = () => {
     const targetButton = findTargetButton();
@@ -107,6 +130,9 @@ onMounted(() => {
     observer.disconnect();
   };
 });
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', handleKeyDown)
+})
 </script>
 
 <style scoped>
